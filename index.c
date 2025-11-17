@@ -10,7 +10,8 @@
 
 typedef struct {
     char word[MAX_LEN];
-    char lines[MAX_LINE_LIST];
+    int count;                // số lần xuất hiện
+    char lines[MAX_LINE_LIST]; // các số dòng
 } IndexItem;
 
 IndexItem indexList[MAX_WORD];
@@ -43,15 +44,17 @@ int findWord(const char *w) {
 void addWord(const char *w, int line) {
     int pos = findWord(w);
 
-    char lineStr[10];
+    char lineStr[12];
     snprintf(lineStr, sizeof(lineStr), "%d", line);
 
     if (pos == -1) {
         strncpy(indexList[indexCount].word, w, MAX_LEN - 1);
+        indexList[indexCount].count = 1;
         strncpy(indexList[indexCount].lines, lineStr, MAX_LINE_LIST - 1);
         indexCount++;
     } else {
-        if (strlen(indexList[pos].lines) + strlen(lineStr) + 2 < MAX_LINE_LIST) {
+        indexList[pos].count++;
+        if (strlen(indexList[pos].lines) + strlen(lineStr) + 3 < MAX_LINE_LIST) {
             strcat(indexList[pos].lines, ", ");
             strcat(indexList[pos].lines, lineStr);
         }
@@ -129,12 +132,11 @@ int main(int argc, char *argv[]) {
     }
 
     for (int i = 0; i < indexCount; i++) {
-        printf("%-12s %s\n", indexList[i].word, indexList[i].lines);
-        fprintf(fo, "%-12s %s\n", indexList[i].word, indexList[i].lines);
+        printf("%-12s %d %s\n", indexList[i].word, indexList[i].count, indexList[i].lines);
+        fprintf(fo, "%-12s %d %s\n", indexList[i].word, indexList[i].count, indexList[i].lines);
     }
 
     fclose(fo);
-
     printf("Đã xuất kết quả ra file: index.txt\n");
     return 0;
 }
