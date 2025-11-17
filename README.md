@@ -2,78 +2,104 @@
 
 ## Chương trình: Tạo chỉ mục từ file văn bản
 
-Chương trình đọc một file văn bản, loại bỏ stop words, lập chỉ mục các từ xuất hiện, và xuất kết quả ra file `index.txt`.
+Chương trình đọc một file văn bản, loại bỏ stop words, lập chỉ mục các từ xuất hiện, và xuất kết quả ra file output.
+
+**Định dạng xuất:**
+
+```
+từ <số_lần_xuất_hiện> <dòng1>, <dòng2>, ...
+```
+
+Ví dụ:
+
+```
+alice       5 1, 2, 3, 5, 10
+```
 
 ---
 
 ## 1. Yêu cầu
 
-* Có **gcc** để biên dịch chương trình C.
-* Makefile để sử dụng `make`.
+* **gcc** để biên dịch chương trình C.
 * File stop words: `stopw.txt`.
-* File văn bản muốn lập chỉ mục (mặc định là `alice30.txt`).
+* File văn bản muốn lập chỉ mục.
 
 ---
 
-## 2. Cấu trúc Makefile
+## 2. Biên dịch và chạy
+
+### Biên dịch thủ công
+
+```bash
+gcc index.c -o index
+```
+
+### Chạy chương trình
+
+```bash
+./index <file_van_ban> <file_output>
+```
+
+Ví dụ:
+
+```bash
+./index alice30.txt ketqua.txt
+```
+
+* `alice30.txt` → file văn bản đầu vào
+* `ketqua.txt` → file xuất kết quả
+
+Chương trình sẽ in ra màn hình và xuất ra file output.
+
+---
+
+## 3. Makefile
+
+Makefile hỗ trợ biến:
 
 ```makefile
 TEXTFILE ?= alice30.txt
+OUTPUT ?= index.txt
 
 all: run
 
 run:
 	gcc index.c -o index
-	./index $(TEXTFILE)
+	./index $(TEXTFILE) $(OUTPUT)
 
 clean:
 	rm -f index
-	rm -f index.txt
+	rm -f $(OUTPUT)
 ```
 
-* `TEXTFILE`: Tên file văn bản đầu vào (mặc định `alice30.txt`).
-* `all`: Biên dịch và chạy chương trình.
-* `run`: Chỉ chạy chương trình với file được chỉ định.
-* `clean`: Xóa file biên dịch và kết quả.
+### Sử dụng Makefile
 
----
-
-## 3. Cách chạy
-
-### 3.1 Chạy với file mặc định
-
-```bash
-make
-```
-
-Hoặc
+* Chạy với file mặc định:
 
 ```bash
 make run
 ```
 
-> Chương trình sẽ đọc `alice30.txt` và xuất kết quả ra `index.txt`.
-
-### 3.2 Chạy với file khác
+* Chạy với file khác:
 
 ```bash
-make run TEXTFILE=mytext.txt
+make run TEXTFILE=mytext.txt OUTPUT=ketqua.txt
 ```
 
-> Thay `mytext.txt` bằng tên file văn bản bạn muốn lập chỉ mục.
-
-### 3.3 Xóa file biên dịch và kết quả
+* Xóa file biên dịch và file output:
 
 ```bash
 make clean
 ```
 
-> Xóa file `index` và `index.txt`.
-
 ---
 
 ## 4. Kết quả
 
-* Chương trình sẽ in ra màn hình danh sách các từ cùng các dòng xuất hiện.
-* Đồng thời xuất ra file `index.txt`.
+* File output có định dạng:
 
+```
+từ <số_lần_xuất_hiện> <dòng1>, <dòng2>, ...
+```
+
+* Đồng thời in ra màn hình với định dạng giống file output.

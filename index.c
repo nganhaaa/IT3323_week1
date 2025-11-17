@@ -10,8 +10,8 @@
 
 typedef struct {
     char word[MAX_LEN];
-    int count;                // số lần xuất hiện
-    char lines[MAX_LINE_LIST]; // các số dòng
+    int count;
+    char lines[MAX_LINE_LIST];
 } IndexItem;
 
 IndexItem indexList[MAX_WORD];
@@ -66,8 +66,8 @@ int cmp(const void *a, const void *b) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        printf("Cách dùng: %s <file_van_ban>\n", argv[0]);
+    if (argc < 3) {
+        printf("Cách dùng: %s <file_van_ban> <file_output>\n", argv[0]);
         return 1;
     }
 
@@ -106,16 +106,12 @@ int main(int argc, char *argv[]) {
             } else {
                 if (wi > 0) {
                     word[wi] = '\0';
-
                     char prev = (i > 0 ? line[i - 1] : ' ');
-
                     char wLower[MAX_LEN];
                     strncpy(wLower, word, MAX_LEN);
                     toLowerStr(wLower);
-
                     if (!isProperNoun(word, prev) && !isStopWord(wLower))
                         addWord(wLower, lineNum);
-
                     wi = 0;
                 }
             }
@@ -125,9 +121,9 @@ int main(int argc, char *argv[]) {
 
     qsort(indexList, indexCount, sizeof(IndexItem), cmp);
 
-    FILE *fo = fopen("index.txt", "w");
+    FILE *fo = fopen(argv[2], "w");
     if (!fo) {
-        printf("Không thể tạo file index.txt\n");
+        printf("Không thể tạo file output: %s\n", argv[2]);
         return 1;
     }
 
@@ -137,6 +133,6 @@ int main(int argc, char *argv[]) {
     }
 
     fclose(fo);
-    printf("Đã xuất kết quả ra file: index.txt\n");
+    printf("Đã xuất kết quả ra file: %s\n", argv[2]);
     return 0;
 }

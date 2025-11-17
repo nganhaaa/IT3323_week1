@@ -1,10 +1,12 @@
 TEXTFILE ?= alice30.txt
+OUTPUT ?= index.txt
+
 all: run
 
 run:
 	gcc index.c -o index
-	./index $(TEXTFILE)
+	./index $(TEXTFILE) $(OUTPUT)
 
 clean:
 	rm -f index
-	rm -f index.txt
+	rm -f $(OUTPUT)
